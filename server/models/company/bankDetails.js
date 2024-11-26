@@ -1,3 +1,6 @@
+import mongoose from "mongoose";
+
+
 const bankDetailSchema = new mongoose.Schema({
     companyId: {
         type: mongoose.Schema.Types.ObjectId,

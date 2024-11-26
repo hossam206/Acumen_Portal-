@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 const addressSchema = new mongoose.Schema({
     companyId: {
         type: mongoose.Schema.Types.ObjectId,

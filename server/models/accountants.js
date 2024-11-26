@@ -10,8 +10,8 @@ import mongoose, { Schema, model } from "mongoose";
 
 // create schema
 const accountantSchema = new Schema({
-  userID: { type: mongoose.Schema.type.ObjectId, ref: 'userSchema', required: true },
-  userName: { type: String, required: true },
+  userID: { type: mongoose.Schema.Types.ObjectId, ref: 'userSchema', required: true },
+  name: { type: String, required: true },
   email: { type: String, required: true },
   phone: { type: Number, required: true },
   department: {
@@ -35,4 +35,4 @@ accountantSchema.pre("save", function (next) {
   next();
 });
 
-export default model("accountant", accountantSchema);
+export default model("Accountant", accountantSchema);

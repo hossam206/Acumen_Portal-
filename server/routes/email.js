@@ -1,8 +1,8 @@
-import { emailSender } from "../controllers/emailSender.js";
+import { emailSender } from "../helpers/emailSender.js";
 import { Router } from "express";
 
 const emailSenderRouter = Router()
 
-emailSenderRouter.post('/',emailSender)
+emailSenderRouter.post('/sendEmail', emailSender)
 
 export default emailSenderRouter;

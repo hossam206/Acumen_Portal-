@@ -1,3 +1,5 @@
+import mongoose from "mongoose";
+
 const RMdepartmentsSchema = new mongoose.Schema({
   companyID: {
     type: mongoose.Schema.Types.ObjectId,

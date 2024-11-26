@@ -1,3 +1,5 @@
+import mongoose from "mongoose";
+
 const documentSchema = new mongoose.Schema({
     companyId: {
       type: mongoose.Schema.Types.ObjectId,

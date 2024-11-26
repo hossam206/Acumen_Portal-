@@ -5,6 +5,8 @@ import dotenv from "dotenv";
 
 import { run } from "./config/databaseConnection.js";
 import path from 'path';
+import { sendEmail } from "./helpers/emailSender.js";
+import { readCSV, readCsvAsync } from "./helpers/importFormCSV.js";
 //import { fileURLToPath } from 'url';
 
 // Get the filename and directory
@@ -45,7 +47,14 @@ try {
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-// Set up API routes
+
+//sendEmail("mo",'01255',"mohamed.ashrafsp@gmail.com","helloworld")
+
+//readCSV('./documents/clientsToImport.csv')
+
+//const results =await readCsvAsync('./documents/clientsToImport.csv')
+
+
 app.use("/api", router);
 // /api/v1/Students/Count
 
