@@ -17,13 +17,33 @@ export const getAccountant = async (req, res) => {
 
 // Get all accountant
 export const getAccountants = async (req, res) => {
+
+  const page = req.query.page || 1;
+  const limit = req.query.limit || 10;
+  const skip = (page - 1) * limit;
+
+  const accountantCount = await Accountant.countDocuments();
+  // console.log(accountantCount)
+
+  const pagesCount = Math.ceil(accountantCount / limit) || 0;
+
   try {
-    const accountants = await Accountant.find();
-    res.status(200).json(accountants);
+    const accountants = await Accountant.find(
+      {}
+    ).populate('userID')
+      .skip(skip)
+      .limit(limit); // Skip the specified number of documents.limit(limit);;
+    res.status(200).json({
+      currentPage: page,
+      pagesCount: pagesCount,
+      accountants: accountants,
+      accountantCount: accountantCount,
+    });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
+
 
 // Add a new accountant
 export const addAccountant = async (req, res) => {
@@ -33,13 +53,13 @@ export const addAccountant = async (req, res) => {
 
     const password = Math.floor(Math.random() * 100000000000)
 
-    const User = await new User({
+    const nUser = new User({
       userName: req.body.email,
       password: password,
       userRole: 'accountant'
 
     })
-    const newUser = await User.save();
+    const newUser = await nUser.save();
 
     const newAccountant = new Accountant({
       userID: newUser._id,

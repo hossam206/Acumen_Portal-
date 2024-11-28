@@ -4,6 +4,7 @@ import usersRoute from "./users.js";
 import loginRoute from "./login.js";
 import emailSenderRouter from "./email.js";
 import helpersRoute from "./helpers/helpers.js";
+import clientRouter from "./clients.js";
 
 // import {
 //   roleMiddleware,
@@ -13,7 +14,8 @@ import helpersRoute from "./helpers/helpers.js";
 const router = express.Router();
 
 router.use("/v1/login", loginRoute);
-router.use("/v1/accountant", accountantRoute);
+router.use("/v1/accountants", accountantRoute);
+router.use("/v1/clients", clientRouter);
 router.use("/v1", usersRoute);
 router.use("/v1/emailsender", emailSenderRouter);
 router.use("/v1/helpers", helpersRoute);

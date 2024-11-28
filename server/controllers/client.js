@@ -19,29 +19,47 @@ export const getClient = async (req, res) => {
 
 // Get all client
 export const getClients = async (req, res) => {
+
+    const page = req.query.page || 1;
+    const limit = req.query.limit || 10;
+    const skip = (page - 1) * limit;
+
+    const clientCount = await Client.countDocuments();
+    // console.log(clientCount)
+
+    const pagesCount = Math.ceil(clientCount / limit) || 0;
+
     try {
-        const clients = await Client.find();
-        res.status(200).json(clients);
+        const clients = await Client.find(
+            {}
+        ).populate('userID')
+            .populate('companies')
+            .skip(skip)
+            .limit(limit); // Skip the specified number of documents.limit(limit);;
+        res.status(200).json({
+            currentPage: page,
+            pagesCount: pagesCount,
+            clients: clients,
+            clientCount: clientCount,
+        });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 };
+
 
 // Add a new client
 export const addClient = async (req, res) => {
     try {
         //console.log(req);
 
-
-        const password = Math.floor(Math.random() * 100000000000)
-
-        const User = await new User({
+        const nUser = new User({
             userName: req.body.email,
-            password: password,
             userRole: 'client'
 
         })
-        const newUser = await User.save();
+
+        const newUser = await nUser.save();
 
 
 
@@ -57,7 +75,7 @@ export const addClient = async (req, res) => {
             userID: newUser._id,
             name: req.body.name,
             email: req.body.email,
-            Notification: req.body.phone,
+            notification: req.body.notification,
             company: [newCompany._id]
 
         });
@@ -71,12 +89,12 @@ export const addClient = async (req, res) => {
             `
         these are your credintials to ACCUMEN PORTAL :
         EMAIL: ${req.body.email}
-        Password: ${password} 
+        Password: ${newUser.password} 
 
 
         Thank you
         accumen portal team.
-       `
+       `, 'reply to Accumen Portal Email'
         )
 
 

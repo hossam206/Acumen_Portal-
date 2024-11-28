@@ -1,10 +1,11 @@
-import Client from "../models/client.js"
+import Client from "../models/clients.js"
 import { deleteFileWithPath } from "../helpers/deleteFile.js"
 import { readCsvAsync } from "../helpers/importFormCSV.js"
 import User from "../models/user.js"
 import { Company, DueDate, Shareholder, Address, RMdepartment, Director, BankDetail } from "../models/company/index.js"
 import company from "../models/company/company.js"
 import mongoose from "mongoose"
+import { sendEmail } from "../helpers/emailSender.js"
 
 
 
@@ -30,18 +31,29 @@ export const importClientsFromCSV = async (req, res) => {
 
             // console.log(results[0]);
             const newUser = new User({
-                userName: "x",
+                userName: results[i]['Email'],
                 userRole: 'client'
             })
             const savedUser = await newUser.save()
 
+            sendEmail(
+                "welcome to ACCUMEN Portal",
+                `this is your ${savedUser.userRole} Credentials:
 
-            console.log(`xxxxxxxxxx${results[i]['description']}`);
+                UserName: ${savedUser.userName}  ,
+                password: ${savedUser.password}
+                
+                
+                `, savedUser.userName, "accumen portal team"
+            )
+
+
+            //console.log(`xxxxxxxxxx${results[i]['description']}`);
 
             const newRMdepartments = new RMdepartment({
                 companyID: companyID,
-                //departmentName: results[i]['RMdepartmentName'] || "",
-                departmentName: "xx",
+                departmentName: results[i]['RMdepartmentName'] || "",
+                // departmentName: "xx",
                 description: `${results[i]['description']}` || "",
                 //description: "xx",
 
@@ -121,6 +133,14 @@ export const importClientsFromCSV = async (req, res) => {
             // console.log("diessssssxrctos", Date.parse(results[i]['entryDate']), results[i]['entryDate']);
 
 
+
+            let vat = results[i]['VATRegistered']
+            if (vat == 0 || vat == '0' || vat == "false" || vat == "False" || vat == "FALSE") {
+                vat == false
+            } else {
+                vat == true
+            }
+
             const savedCompany = await Company.findByIdAndUpdate(
                 companyID,
                 {
@@ -139,7 +159,7 @@ export const importClientsFromCSV = async (req, res) => {
                     status: results[i]['status'] || "",
                     incorporationDate: Date.parse(results[i]['incorporationDate']) || "",
                     corporationTax_UTR: results[i]['corporationTax_UTR'] || "",
-                    VATRegistered: false,
+                    VATRegistered: vat,
                     dueDates: savedDueDate._id,
                     shareholders: [savedShareholder._id],
                     directors: [savedDirector._id],
@@ -164,16 +184,11 @@ export const importClientsFromCSV = async (req, res) => {
 
             })
 
+
+
             var savedClient = await newClient.save()
 
         }
-
-        // console.log(results[0]['Client Name']||"");
-
-        //await Client.insertMany(results)
-
-
-
 
 
         deleteFileWithPath(`./${path}`)

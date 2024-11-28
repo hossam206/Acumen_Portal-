@@ -10,7 +10,7 @@ import mongoose, { Schema, model } from "mongoose";
 
 // create schema
 const accountantSchema = new Schema({
-  userID: { type: mongoose.Schema.Types.ObjectId, ref: 'userSchema', required: true },
+  userID: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   name: { type: String, required: true },
   email: { type: String, required: true },
   phone: { type: Number, required: true },

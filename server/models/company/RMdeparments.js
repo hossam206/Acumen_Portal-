@@ -8,7 +8,6 @@ const RMdepartmentsSchema = new mongoose.Schema({
   departmentName: {
     type: String,
 
-    // Ensures no duplicate department names
   },
   description: {
     type: String,
