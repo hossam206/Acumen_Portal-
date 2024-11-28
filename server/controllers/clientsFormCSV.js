@@ -2,7 +2,11 @@ import Client from "../models/client.js"
 import { deleteFileWithPath } from "../helpers/deleteFile.js"
 import { readCsvAsync } from "../helpers/importFormCSV.js"
 import User from "../models/user.js"
-import { Company } from "../models/company/index.js"
+import { Company, DueDate, Shareholder, Address, RMdepartment, Director, BankDetail } from "../models/company/index.js"
+import company from "../models/company/company.js"
+import mongoose from "mongoose"
+
+
 
 
 
@@ -14,101 +18,157 @@ export const importClientsFromCSV = async (req, res) => {
         const results = await readCsvAsync(`./${path}`)
 
 
-    for(i=0;i<=results.length;i++){
+        for (let i = 1; i <= process.env.CSV_import_limit; i++) {
+            //  console.log(results[i])
+            let newCompany = new Company({})
 
- 
-        // console.log(results[0]);
-        const newUser = new User({
-            userName:results[i].Email,
-            userRole:'client'
-        })
+            // const companyID = await newCompany.save()._id
+            const companyID = (await newCompany.save())._id
 
 
-        const newCompany=new Company({
-            companyName: results[i]['companyName'],
-            contactName: results[i]['contactName'],
-            phone: results[i]['phone'],
-            entryDate: results[i]['entryDate'],
-            registrationNumber: results[i]['registrationNumber'],
-            AuthCode: results[i]['AuthCode'],
-            CISRegistrationNumber: results[i]['CISRegistrationNumber'],
-            AccountsOfficeReference: results[i]['AccountsOfficeReference'],
-            natureOfBusiness: results[i]['natureOfBusiness'],
-            accountingReferenceDate: results[i]['accountingReferenceDate'],
-            registrationDate: results[i]['registrationDate'],
-            employerPAYEReference: results[i]['employerPAYEReference'],
-            status: results[i]['status'],
-            incorporationDate: results[i]['incorporationDate'],
-            corporationTax_UTR: results[i]['corporationTax_UTR'],
-            VATRegistered: results[i]['VATRegistered'],
-        })
-        const newClient = new Client({
-            userID: newUser._id,
-            name:results[i]['Client Name'],
-            email:results[i]['Email'],
-            notification:1,
-            companies:[newCompany._id]
-
-        })
 
 
-    }
+            // console.log(results[0]);
+            const newUser = new User({
+                userName: "x",
+                userRole: 'client'
+            })
+            const savedUser = await newUser.save()
 
-       // console.log(results[0]['Client Name']);
+
+            console.log(`xxxxxxxxxx${results[i]['description']}`);
+
+            const newRMdepartments = new RMdepartment({
+                companyID: companyID,
+                //departmentName: results[i]['RMdepartmentName'] || "",
+                departmentName: "xx",
+                description: `${results[i]['description']}` || "",
+                //description: "xx",
+
+            })
+
+            const savedRMdepartments = await newRMdepartments.save()
 
 
-        /**
-         * {
-  'Client Name': 'A LINE TRANSPORT LTD',
-  Email: 'jakub@acumenaccountants.co.uk',
-  'Company Name': 'A LINE TRANSPORT LTD',
-  'Contact Person': 'jakub@acumenaccountants.co.uk',
-  'Contact Phone': '7597785287',
-  'Contact Email': 'jakub@acumenaccountants.co.uk',
-  'Company Phone': '7597785287',
-  'Registration Number': '14136313',
-  'Auth Code': 'LA9V7M',
-  'Registration Date': '',
-  'CIS Registraion Number': '',
-  '': '',
-  'Employer PAYE Reference': '',
-  'Accounts Office Reference': '',
-  Status: 'ACTIVE',
-  'Nature of Business': 'Freight rail transport',
-  'Incorporation Date': '5/27/2022',
-  'Accounting Reference Date': '31-May',
-  'Corporation Tax (UTR)': '9870118255',
-  'VAT Registered': '',
-  'Vat Number': '',
-  'Quarter 1 Due By': '',
-  'Quarter 2 Due By': '',
-  'Quarter 3 Due By': '',
-  'Quarter 4 Due By': '',
-  'Accounts Due By': '31-May',
-  'Self assesment Due By': '',
-  'Director Title': 'Mr ',
-  'Director Name': 'Jakub LUBIENIECKI',
-  'Director Date of Appointment': '5/27/2022',
-  'Date of Resignation': '',
-  'Date Registration for SE': '',
-  'Director Date of Birth': '',
-  'Director UTR': '',
-  'Director UTR ID': '',
-  'Director UTR Password': '',
-  'Director NIN': 'SG885049B',
-  'Business Address': 'Flat 52, Caspian View, Buckingham Road, Bletchley\nMILTON KEYNES, MK3 5JJ',
-  'Registered Office Address': '15-17 Upper George Street, Luton, LU1 2RD',
-  Phone: '7597785287',
-  Website: '',
-  'Contact Name': 'Mr Jakub LUBIENIECKI',
-  'Contact Entry Date': '',
-  'Bank Name': '',
-  'Account Holder Name': '',
-  'Account Number': '',
-  'Sort code': '',
-  Departments: ''
-}
-         */
+            const newDueDate = new DueDate({
+                companyId: companyID,
+                vatNumber: results[i]['vatNumber'] || "",
+                //vatNumber: "xx",
+                //vatReturnsPeriod: "xx",
+                vatReturnsPeriod: results[i]['vatReturnsPeriod'] || "", // annual, quarterly
+
+
+                quarter1DueBy: Date.parse(results[i].quarter1DueBy) || "",
+                quarter2DueBy: Date.parse(results[i]['quarter2DueBy']) || "",
+                quarter3DueBy: Date.parse(results[i]['quarter3DueBy']) || "",
+                quarter4DueBy: Date.parse(results[i]['quarter4DueBy']) || "",
+                confirmationStatementDueBy: Date.parse(results[i]['confirmationStatementDueBy']) || "",
+                annualVatDueBy: Date.parse(results[i]['annualVatDueBy']) || "",
+
+            })
+
+            const savedDueDate = await newDueDate.save()
+
+            const newAddress = new Address({
+                companyId: companyID,
+                businessAddress: results[i]['businessAddress'] || "",
+                vatReturnsPeriod: results[i]['vatReturnsPeriod'] || "", // annual, quarterly
+                registeredOfficeAddress: results[i]['registeredOfficeAddress'] || "",
+                telephone: results[i]['telephone'] || "",
+                email: results[i]['email'] || "",
+                website: results[i]['website'] || ""
+            })
+
+
+            const savedAddress = await newAddress.save()
+
+            const newBankDetails = new BankDetail({
+                bName: results[i]['bankName'] || "",
+                accountNumber: results[i]['accountNumber'] || "", // annual, quarterly
+                accountHolder: results[i]['accountHolder'] || "",
+                sortCode: results[i]['sortCode'] || "",
+            })
+
+
+            const savedBankDetails = await newBankDetails.save()
+
+            const newShareholder = new Shareholder({
+                companyId: companyID,
+                shName: results[i]['shName'] || "",
+                numberOfShares: results[i]['numberOfShares'] || "",
+                shareClass: results[i]['shareClass'] || "",
+
+            })
+
+            const savedShareholder = await newShareholder.save()
+
+            const newDirector = new Director({
+                companyId: companyID,
+                companyId: companyID,
+                dTitle: results[i]['directorTitle'] || "",
+                dateOfAppointment: Date.parse(results[i]['dateOfAppointment']) || "", // annual, quarterly
+                dateRegistrationForSE: Date.parse(results[i]['dateRegistrationForSE']) || "",
+                dateOfResignation: Date.parse(results[i]['dateOfResignation']) || "",
+                dName: results[i]['dName'] || "",
+                dDateOfBirth: Date.parse(results[i]['dDateOfBirth']) || "",
+                dUTR: results[i]['dUTR'] || "",
+                dUTR_ID: results[i]['dUTR_ID'] || "",
+                dUTR_Password: results[i]['dUTR_Password'] || "",
+                dNIN: results[i]['dNIN'] || "",
+            })
+
+            const savedDirector = await newDirector.save()
+            // console.log("diessssssxrctos", Date.parse(results[i]['entryDate']), results[i]['entryDate']);
+
+
+            const savedCompany = await Company.findByIdAndUpdate(
+                companyID,
+                {
+                    companyName: results[i]['companyName'] || "",
+                    contactName: results[i]['contactName'] || "",
+                    phone: results[i]['phone'] || "",
+                    entryDate: Date.parse(results[i]['entryDate']) || "",
+                    registrationNumber: results[i]['registrationNumber'] || "",
+                    AuthCode: results[i]['AuthCode'] || "",
+                    CISRegistrationNumber: results[i]['CISRegistrationNumber'] || "",
+                    AccountsOfficeReference: results[i]['AccountsOfficeReference'] || "",
+                    natureOfBusiness: results[i]['natureOfBusiness'] || "",
+                    accountingReferenceDate: Date.parse(results[i]['accountingReferenceDate']) || "",
+                    registrationDate: Date.parse(results[i]['registrationDate']) || "",
+                    employerPAYEReference: results[i]['employerPAYEReference'] || "",
+                    status: results[i]['status'] || "",
+                    incorporationDate: Date.parse(results[i]['incorporationDate']) || "",
+                    corporationTax_UTR: results[i]['corporationTax_UTR'] || "",
+                    VATRegistered: false,
+                    dueDates: savedDueDate._id,
+                    shareholders: [savedShareholder._id],
+                    directors: [savedDirector._id],
+                    address: savedAddress._id,
+                    bankDetails: savedBankDetails._id,
+                    RMdepartments: savedRMdepartments._id
+
+
+                },
+                { new: true } // Return the updated document
+            ).populate()
+
+            // console.log("saved", savedCompany)
+
+
+            const newClient = new Client({
+                userID: newUser._id,
+                name: results[i]['clientName'] || "",
+                email: results[i]['Email'] || "",
+                notification: 1,
+                companies: [savedCompany]
+
+            })
+
+            var savedClient = await newClient.save()
+
+        }
+
+        // console.log(results[0]['Client Name']||"");
 
         //await Client.insertMany(results)
 
@@ -116,10 +176,11 @@ export const importClientsFromCSV = async (req, res) => {
 
 
 
-        deleteFileWithPath(path)
+        deleteFileWithPath(`./${path}`)
 
-        res.status(200).json({ message: 'Successfully Imported!!' })
+        res.status(200).json({ savedClient })
     } catch (e) {
+        console.log(e)
 
         res.status(400).json({ Error: ` ${e.message}` })
     }

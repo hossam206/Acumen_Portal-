@@ -8,23 +8,24 @@ const userSchema = new Schema({
         type: String, required: true,
         default: function () {
             return this.generatePassword()
-        }},
-        userRole: {
-            type: String,
-            enum: [
-                'admin',
-                'accountant',
-                'client'
-            ],
-            required: true
-        },
+        }
+    },
+    userRole: {
+        type: String,
+        enum: [
+            'admin',
+            'accountant',
+            'client'
+        ],
+        required: true
+    },
 
-        createdAt: { type: Date, default: Date.now },
-        updatedAt: {
-            type: Date, default: Date.now
-        },
+    createdAt: { type: Date, default: Date.now },
+    updatedAt: {
+        type: Date, default: Date.now
+    },
 
-    });
+});
 
 
 userSchema.methods.generatePassword = function () {

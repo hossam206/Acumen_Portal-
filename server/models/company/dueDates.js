@@ -15,4 +15,4 @@ const dueDateSchema = new mongoose.Schema({
     annualVatDueBy: Date,
 });
 
-export default mongoose.model('Duedates', dueDateSchema) 
+export default mongoose.model('Duedate', dueDateSchema) 

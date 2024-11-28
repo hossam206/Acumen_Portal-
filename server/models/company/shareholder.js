@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const placeholderSchema = new mongoose.Schema({
+const shareholderSchema = new mongoose.Schema({
     companyId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Company",
@@ -11,4 +11,4 @@ const placeholderSchema = new mongoose.Schema({
 });
 
 
-export default mongoose.model("Placeholder", placeholderSchema);
+export default mongoose.model("Shareholder", shareholderSchema);

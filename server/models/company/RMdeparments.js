@@ -5,12 +5,11 @@ const RMdepartmentsSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Company'
   },
-  departmentName: [{
+  departmentName: {
     type: String,
 
-    required: true,
-    unique: true, // Ensures no duplicate department names
-  }],
+    // Ensures no duplicate department names
+  },
   description: {
     type: String,
     required: false,
@@ -21,4 +20,4 @@ const RMdepartmentsSchema = new mongoose.Schema({
   },
 });
 
-export default mongoose.model("RMdepartments", RMdepartmentsSchema);
+export default mongoose.model("RMdepartment", RMdepartmentsSchema);
