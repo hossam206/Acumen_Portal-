@@ -8,6 +8,18 @@ const clientSchema = new Schema({
     name: { type: String, required: true },
     email: { type: String, required: true },
     notification: { type: Number, required: true ,enum:[1,2,3]},//1.2.3
+    department: {
+        type: String,
+        enum: [
+          'Annual accounts, CT and Director department',
+          'Finance department',
+          'General and administrative matters',
+          'Paye, Pension and CIS department department',
+          'Self-employed and partnership department',
+          'Vat department'
+        ],
+        required: true
+      },
     companies: [{
         type: mongoose.Types.ObjectId, ref: 'Company',
 

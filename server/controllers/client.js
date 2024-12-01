@@ -76,6 +76,7 @@ export const addClient = async (req, res) => {
             name: req.body.name,
             email: req.body.email,
             notification: req.body.notification,
+            department: req.body.department,
             company: [newCompany._id]
 
         });
@@ -144,3 +145,69 @@ export const getClientsCount = async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 };
+
+export const getClientCompanies = async (req, res) => {
+
+    const page = req.query.page || 1;
+    const limit = req.query.limit || 10;
+    const skip = (page - 1) * limit;
+
+
+    // console.log(clientCount)
+
+
+    try {
+        const client = JSON.parse(JSON.stringify(await Client.findById(
+            req.params.id
+        ).populate('companies')
+            .skip(skip)
+            .limit(limit)));
+
+        console.log(client)
+
+        const companyCount = client.companies.length
+        const pagesCount = Math.ceil(companyCount / limit) || 0;
+        // Skip the specified number of documents.limit(limit);;
+        res.status(200).json({
+            currentPage: page,
+            pagesCount,
+            client,
+            companyCount,
+        });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+
+export const getDepartmentClients = async (req, res) => {
+
+    const page = req.query.page || 1;
+    const limit = req.query.limit || 10;
+    const skip = (page - 1) * limit;
+
+
+    // console.log(clientCount)
+
+
+
+    try {
+        const clients = await Client.find(
+            { department: req.body.department }
+        ).skip(skip)
+            .limit(limit);
+
+        const pagesCount = Math.ceil(clients.length / limit) || 0;
+
+        // Skip the specified number of documents.limit(limit);
+        res.status(200).json({
+            currentPage: page,
+            pagesCount: pagesCount,
+            clients: clients,
+            clientCount: clients.length,
+        });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
