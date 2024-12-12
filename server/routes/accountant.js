@@ -6,7 +6,7 @@ import {
   updateAccountant,
   deleteAccountant,
   addAccountant,
-} from "../controllers/accountant.js";
+} from "../controllers/users/accountant.js";
 import { authMiddleware, roleMiddleware } from "../middlewares/Middlewares.js";
 export const accountantRoute = express.Router();
 

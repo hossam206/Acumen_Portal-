@@ -1,13 +1,28 @@
 
-import { importClientsFromCSV } from "../../controllers/clientsFormCSV.js";
+import { importClientsFromCSV } from "../../controllers/helpers/clientsFormCSV.js";
 import { upload } from "../../config/multer.js";
 
 import { Router } from 'express';
+import { getEmailLogs, getLogsCount } from "../../controllers/helpers/emailLogs.js";
 
+import { addHelper, updateHelper,getHelpers, deleteHelper, getHelperById } from "../../controllers/helpers/helpers.js"
 const helpersRoute = new Router()
 
-//helpersRoute.use('/helpers',importClientRoute)
+//csv import
 helpersRoute.post('/importCSV', upload.single('clients'), importClientsFromCSV)
+
+//email logs
+
+helpersRoute.get("/email/logs", getEmailLogs)
+helpersRoute.get("/email/logs/count", getLogsCount)
+
+
+//helpers
+helpersRoute.post('/consts', addHelper);          // CREATE
+helpersRoute.get('/consts', getHelpers);            // READ all
+helpersRoute.get('/consts/:id', getHelperById);     // READ by ID
+helpersRoute.put('/consts/:id', updateHelper);      // UPDATE
+helpersRoute.delete('/consts/:id', deleteHelper);
 
 
 export default helpersRoute

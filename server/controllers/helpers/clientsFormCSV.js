@@ -1,11 +1,11 @@
-import Client from "../models/clients.js"
-import { deleteFileWithPath } from "../helpers/deleteFile.js"
-import { readCsvAsync } from "../helpers/importFormCSV.js"
-import User from "../models/user.js"
-import { Company, DueDate, Shareholder, Address, RMdepartment, Director, BankDetail } from "../models/company/index.js"
-import company from "../models/company/company.js"
+import Client from "../../models/users/clients.js"
+import { deleteFileWithPath } from "../../helpers/deleteFile.js"
+import { readCsvAsync } from "../../helpers/importFormCSV.js"
+import User from "../../models/users/user.js"
+import { Company, DueDate, Shareholder, Address, RMdepartment, Director, BankDetail } from "../../models/company/index.js"
+import company from "../../models/company/company.js"
 import mongoose from "mongoose"
-import { sendEmail } from "../helpers/emailSender.js"
+import { sendEmail } from "../../helpers/emailSender.js"
 
 
 

@@ -1,8 +1,10 @@
-import User from "../models/user.js";
-import Client from "../models/clients.js"; // Import the Client model
-import { sendEmail } from "../helpers/emailSender.js";
-import company from "../models/company/company.js";
-import { Company } from "../models/company/index.js";
+import User from "../../models/users/user.js";
+import Client from "../../models/users/clients.js"; // Import the Client model
+import { sendEmail } from "../../helpers/emailSender.js";
+import company from "../../models/company/company.js";
+import { Company } from "../../models/company/index.js";
+import user from "../../models/users/user.js";
+import { addEmailLog } from "../../helpers/emailLogs.js";
 
 // Get a Client by ID
 export const getClient = async (req, res) => {
@@ -98,6 +100,7 @@ export const addClient = async (req, res) => {
        `, 'reply to Accumen Portal Email'
         )
 
+        addEmailLog(req.body.email,"Accumen portal New User Notification!",req.body.name)
 
         const clientData = await newClient.save();
 
@@ -111,6 +114,12 @@ export const addClient = async (req, res) => {
 export const deleteClient = async (req, res) => {
     try {
         const result = await Client.findByIdAndDelete(req.params.id);
+        let result1
+        if(result){
+         result1 = await user.findByIdAndDelete(result.userID);
+        }
+        
+        console.log(result,result1)
         if (!result) {
             return res.status(404).json({ message: "Client not found" });
         }

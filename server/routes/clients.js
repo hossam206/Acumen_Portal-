@@ -8,7 +8,7 @@ import {
     addClient,
     getClientCompanies,
     getDepartmentClients
-} from "../controllers/client.js";
+} from "../controllers/users/client.js";
 import { authMiddleware, roleMiddleware } from "../middlewares/Middlewares.js";
 export const clientRoute = express.Router();
 

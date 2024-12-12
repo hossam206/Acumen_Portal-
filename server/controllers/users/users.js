@@ -1,4 +1,4 @@
-import user from "../models/user.js"; // Import the user model
+import user from "../../models/users/user.js"; // Import the user model
 
 
 // Get a user by ID

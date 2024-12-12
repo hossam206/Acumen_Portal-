@@ -6,7 +6,7 @@ import {
   updateuser,
   deleteuser,
   adduser,
-} from "../controllers/users.js";
+} from "../controllers/users/users.js";
 //import { authMiddleware, roleMiddleware } from "../middlewares/Middlewares.js";
 export const usersRoute = express.Router();
 

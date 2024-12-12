@@ -1,6 +1,6 @@
-import User from "../models/user.js";
-import Accountant from "../models/accountants.js"; // Import the Accountant model
-import { sendEmail } from "../helpers/emailSender.js";
+import User from "../../models/users/user.js";
+import Accountant from "../../models/users/accountants.js"; // Import the Accountant model
+import { sendEmail } from "../../helpers/emailSender.js";
 
 // Get a Accountant by ID
 export const getAccountant = async (req, res) => {
@@ -86,6 +86,8 @@ export const addAccountant = async (req, res) => {
        `
     )
 
+    addEmailLog(req.body.email, "Accumen portal New User Notification!", req.body.name)
+
     const ans = await newAccountant.save();
 
     res.status(201).json(ans.toJSON());
@@ -98,6 +100,11 @@ export const addAccountant = async (req, res) => {
 export const deleteAccountant = async (req, res) => {
   try {
     const result = await Accountant.findByIdAndDelete(req.params.id);
+    let result1
+    if (result) {
+      result1 = await User.findByIdAndDelete(result.userID);
+    }
+
     if (!result) {
       return res.status(404).json({ message: "Accountant not found" });
     }
