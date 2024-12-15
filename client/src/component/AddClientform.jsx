@@ -38,6 +38,11 @@ export default function AddClientform() {
           "fileSize",
           "File size should not exceed 15MB.",
           (value) => value && value.size <= 15 * 1024 * 1024
+        )
+        .test(
+          "fileFormat",
+          "Unsupported file format",
+          (value) => value && ["application/pdf"].includes(value.type)
         ),
     }),
     onSubmit: (values, { resetForm }) => {
@@ -154,6 +159,7 @@ export default function AddClientform() {
                 name="name"
                 className="peer input block "
                 type="text"
+                aria-label="enter your name "
                 placeholder=" " // Placeholder space for floating label
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
@@ -175,6 +181,7 @@ export default function AddClientform() {
               <input
                 id="clientemail"
                 name="email"
+                aria-label="enter your email "
                 className="peer input "
                 type="email"
                 placeholder=" " // Placeholder space for floating label
@@ -196,7 +203,7 @@ export default function AddClientform() {
             </div>
             <div className="w-full mb-5">
               <label
-                htmlFor="dropzone-file "
+                htmlFor="dropzone-file"
                 className="flex flex-col items-center justify-center py-9 w-full border border-gray-300 border-dashed rounded-2xl cursor-pointer bg-gray-50 "
               >
                 <div className="mb-3 flex items-center justify-center">
@@ -229,7 +236,6 @@ export default function AddClientform() {
                   name="LOEfile"
                   type="file"
                   aria-label="Upload LOE file"
-                  s
                   className="hidden"
                   onChange={handleFileChange}
                   onBlur={formik.handleBlur}

@@ -202,7 +202,6 @@ export default function AddClientform() {
                 name="email"
                 className="peer input "
                 type="email"
-                placeholder=" " // Placeholder space for floating label
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 value={formik.values.email}
